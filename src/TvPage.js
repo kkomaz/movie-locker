@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { Button, Card, Form } from 'react-bootstrap'
+import { Button, Card, Form, Row, Col } from 'react-bootstrap'
 import axios from 'axios'
 
 function MoviePage(props) {
   const [inputText, setInputText] = useState('')
+  const [tvList, setTvList] = useState([])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -11,6 +12,7 @@ function MoviePage(props) {
     try {
       const tvShows = await axios.get(`http://api.tvmaze.com/search/shows?q=${inputText}`)
       console.log(tvShows);
+      setTvList(tvShows.data)
     } catch (e) {
       console.log(e)
     }
@@ -41,6 +43,22 @@ function MoviePage(props) {
           </Button>
         </Card.Text>
       </Card>
+      <Row style={{ marginTop: '2em' }}>
+        {
+          tvList.map((tv) => (
+            <Col xs={4} style={{ marginBottom: '1em' }}>
+              <Card>
+                <Card.Img variant="top" src={tv.show.image.medium} />
+                <Card.Body>
+                  <Card.Title style={{ textAlign: 'center' }}>
+                    {tv.show.name}
+                  </Card.Title>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))
+        }
+      </Row>
     </>
   )
 }
