@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { appConfig } from 'utils/constants'
-import './App.scss';
-import { Container, Navbar, Button } from 'react-bootstrap'
+import { Container, Navbar, Button, Card } from 'react-bootstrap'
 import { UserSession } from 'blockstack'
+import Home from './Home'
+import './App.scss';
 
 function App() {
   const [userSession] = useState(new UserSession({ appConfig }))
@@ -35,9 +36,8 @@ function App() {
 
   return (
     <div className="App">
-      <Navbar>
-        <Navbar.Brand>Movie Locker</Navbar.Brand>
-        <Navbar.Toggle />
+      <Navbar bg="dark" variant="dark">>
+        <Navbar.Brand>TV Locker</Navbar.Brand>
         <Navbar.Collapse className="justify-content-end">
           <Navbar.Text>
             {
@@ -48,11 +48,21 @@ function App() {
           </Navbar.Text>
         </Navbar.Collapse>
       </Navbar>
-      <Container>
+
+      <Container style={{ marginTop: '3em' }}>
         {
           userSession.isUserSignedIn() ?
-          <div>Is Signed In</div> :
-          <div>Is Not Signed In</div>
+          <Home userSession={userSession} /> :
+          <Card className="text-center">
+            <Card.Header>Welcome to MovieList</Card.Header>
+            <Card.Body>
+              <Card.Title>Sign in to access the MovieList Directory!</Card.Title>
+              <Card.Text>
+                MovieList is powered by Blockstack, a new internet for decentralized apps.
+              </Card.Text>
+              <Button onClick={handleSignIn} variant="primary">Sign In with Blockstack</Button>
+            </Card.Body>
+          </Card>
         }
       </Container>
     </div>
