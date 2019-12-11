@@ -10,19 +10,28 @@ function App() {
 
   useEffect(() => {
     const getHandlePendingSignIn = async () => {
-      return await userSession.handlePendingSignIn()
-    }
-
-    if (!userSession.isUserSignedIn() && userSession.isSignInPending()) {
-      const userData = getHandlePendingSignIn()
+      const userData = await userSession.handlePendingSignIn()
 
       if (!userData.username) {
         throw new Error('This app requires a username')
       }
 
-      window.location = '/'
+      window.location = "/"
+    }
+
+    if (!userSession.isUserSignedIn() && userSession.isSignInPending()) {
+      getHandlePendingSignIn()
     }
   }, [])
+
+  const handleSignOut = () => {
+    userSession.signUserOut()
+    window.location = '/'
+  }
+
+  const handleSignIn = () => {
+    userSession.redirectToSignIn()
+  }
 
   return (
     <div className="App">
@@ -33,8 +42,8 @@ function App() {
           <Navbar.Text>
             {
               userSession.isUserSignedIn() ?
-              <Button variant="link">Sign Out</Button> :
-              <Button variant="link">Sign In</Button>
+              <Button onClick={handleSignOut} variant="link">Sign Out</Button> :
+              <Button onClick={handleSignIn} variant="link">Sign In</Button>
             }
           </Navbar.Text>
         </Navbar.Collapse>
