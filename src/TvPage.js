@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { Button, Card, Form, Row, Col, Alert } from 'react-bootstrap'
+import { TV_PATH } from 'utils/constants'
 import axios from 'axios'
 
 function MoviePage(props) {
+  const { userSession } = props
+
   const [inputText, setInputText] = useState('')
   const [tvList, setTvList] = useState([])
-  const [show, setShow] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -14,7 +16,7 @@ function MoviePage(props) {
       const tvShows = await axios.get(`http://api.tvmaze.com/search/shows?q=${inputText}`)
       setTvList(tvShows.data)
     } catch (e) {
-      setShow(true)
+      alert(e.message)
     }
   };
 
@@ -22,15 +24,19 @@ function MoviePage(props) {
     setInputText(e.target.value)
   }
 
+  const saveToStorage = async (show) => {
+    const options = { encrypt: false }
+    
+    try {
+      await userSession.putFile(TV_PATH, JSON.stringify([show]), options)
+      alert(`${show.name} successfully added to your library`)
+    } catch (e) {
+      alert(e.message);
+    }
+  }
+
   return (
     <>
-      {
-        show &&
-        <Alert variant="danger" onClose={() => setShow(false)} dismissible>
-          <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
-        </Alert>
-      }
-
       <Card>
         <Card.Header>TV Show Search</Card.Header>
         <Card.Text style={{ padding: '20px' }}>
@@ -61,6 +67,14 @@ function MoviePage(props) {
                   <Card.Title style={{ textAlign: 'center' }}>
                     {tv.show.name}
                   </Card.Title>
+                  <Card.Text style={{ textAlign: 'center' }}>
+                    <Button
+                      variant="secondary"
+                      onClick={() => saveToStorage(tv.show)}
+                    >
+                      Save
+                    </Button>
+                  </Card.Text>
                 </Card.Body>
               </Card>
             </Col>
