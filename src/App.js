@@ -4,7 +4,6 @@ import { appConfig } from 'utils/constants'
 import { Container, Navbar, Button, Card } from 'react-bootstrap'
 import { UserSession } from 'blockstack'
 import Home from './Home'
-import './App.scss';
 
 function App() {
   const [userSession] = useState(new UserSession({ appConfig }))
