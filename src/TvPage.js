@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
-import { Button, Card, Form, Row, Col, Alert } from 'react-bootstrap'
+import { Button, Card, Form, Row, Col } from 'react-bootstrap'
 import { TV_PATH } from 'utils/constants'
 import axios from 'axios'
+import _ from 'lodash'
 
-function MoviePage(props) {
-  const { userSession } = props
+function TvPage(props) {
+  const { userSession, userTvList, setUserTvList } = props
 
   const [inputText, setInputText] = useState('')
   const [tvList, setTvList] = useState([])
+  const userTvIds = _.map(userTvList, 'id')
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -28,10 +30,28 @@ function MoviePage(props) {
     const options = { encrypt: false }
     
     try {
-      await userSession.putFile(TV_PATH, JSON.stringify([show]), options)
+      const newTvList = [...userTvList, show]
+      await userSession.putFile(TV_PATH, JSON.stringify(newTvList), options)
+      setUserTvList(newTvList)
       alert(`${show.name} successfully added to your library`)
     } catch (e) {
       alert(e.message);
+    }
+  }
+
+  const removeFromStorage = async (show) => {
+    const options = { encrypt: false }
+
+    try {
+      const newTvList = _.filter(userTvList, (tv) => (
+        tv.id !== show.id
+      ));
+
+      await userSession.putFile(TV_PATH, JSON.stringify(newTvList), options)
+      alert(`${show.name} successfully removed to your library`)
+      setUserTvList(newTvList)
+    } catch (e) {
+      alert(e.message)
     }
   }
 
@@ -68,12 +88,21 @@ function MoviePage(props) {
                     {tv.show.name}
                   </Card.Title>
                   <Card.Text style={{ textAlign: 'center' }}>
-                    <Button
-                      variant="secondary"
-                      onClick={() => saveToStorage(tv.show)}
-                    >
-                      Save
-                    </Button>
+                    {
+                      _.includes(userTvIds, tv.show.id) ?
+                      <Button
+                        variant="danger"
+                        onClick={() => removeFromStorage(tv.show)}
+                      >
+                        Remove
+                      </Button> :
+                      <Button
+                        variant="secondary"
+                        onClick={() => saveToStorage(tv.show)}
+                      >
+                        Save
+                      </Button>
+                    }
                   </Card.Text>
                 </Card.Body>
               </Card>
@@ -85,4 +114,4 @@ function MoviePage(props) {
   )
 }
 
-export default MoviePage
+export default TvPage
