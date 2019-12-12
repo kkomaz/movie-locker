@@ -17,7 +17,8 @@ function TvPage(props) {
 
     try {
       const tvShows = await axios.get(`http://api.tvmaze.com/search/shows?q=${inputText}`)
-      setTvList(tvShows.data)
+      const filteredTvShows = _.map(tvShows.data, (t) => ( t.show ))
+      setTvList(filteredTvShows)
     } catch (e) {
       alert(e.message)
     }
@@ -85,23 +86,23 @@ function TvPage(props) {
           tvList.map((tv) => (
             <Col xs={4} style={{ marginBottom: '1em' }}>
               <Card>
-                <Card.Img variant="top" src={tv.show.image.medium} />
+                <Card.Img variant="top" src={tv.image.medium} />
                 <Card.Body>
                   <Card.Title style={{ textAlign: 'center' }}>
-                    {tv.show.name}
+                    {tv.name}
                   </Card.Title>
                   <Card.Text style={{ textAlign: 'center' }}>
                     {
-                      _.includes(userTvIds, tv.show.id) ?
+                      _.includes(userTvIds, tv.id) ?
                       <Button
                         variant="danger"
-                        onClick={() => removeFromStorage(tv.show)}
+                        onClick={() => removeFromStorage(tv)}
                       >
                         Remove
                       </Button> :
                       <Button
                         variant="secondary"
-                        onClick={() => saveToStorage(tv.show)}
+                        onClick={() => saveToStorage(tv)}
                       >
                         Save
                       </Button>
