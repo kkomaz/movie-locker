@@ -3,10 +3,12 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { appConfig } from 'utils/constants'
 import { Container, Navbar, Button, Card } from 'react-bootstrap'
 import { UserSession } from 'blockstack'
+import { withRouter } from 'react-router-dom'
 import Home from './Home'
 
-function App() {
+function App(props) {
   const [userSession] = useState(new UserSession({ appConfig }))
+  const { history } = props
 
   useEffect(() => {
     const getHandlePendingSignIn = async () => {
@@ -33,15 +35,30 @@ function App() {
     userSession.redirectToSignIn()
   }
 
+  const goHome = () => {
+    const { history } = props
+    history.push('/')
+  }
+
+  const goToMyMovies = () => {
+    const { username } = userSession.loadUserData()
+    history.push(`${username}/movies`)
+  }
+
   return (
     <div className="App">
       <Navbar bg="dark" variant="dark">>
-        <Navbar.Brand>TV Locker</Navbar.Brand>
+        <Navbar.Brand onClick={goHome} style={{ cursor: 'pointer'}}>
+          TV Locker
+        </Navbar.Brand>
         <Navbar.Collapse className="justify-content-end">
           <Navbar.Text>
             {
               userSession.isUserSignedIn() ?
-              <Button onClick={handleSignOut} variant="link">Sign Out</Button> :
+              <>
+                <Button onClick={goToMyMovies} variant="link">My TV Shows</Button>
+                <Button onClick={handleSignOut} variant="link">Sign Out</Button>
+              </> :
               <Button onClick={handleSignIn} variant="link">Sign In</Button>
             }
           </Navbar.Text>
@@ -68,4 +85,4 @@ function App() {
   );
 }
 
-export default App;
+export default withRouter(App);
