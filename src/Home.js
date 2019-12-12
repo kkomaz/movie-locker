@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { TV_PATH } from 'utils/constants'
 import TvPage from './TvPage'
+import PublicTvShows from './PublicUserTvShows'
 
 function Home(props) {
   const { userSession } = props
@@ -40,9 +41,18 @@ function Home(props) {
       <Route
         exact
         path="/:username/movies"
-        render={({ match }) => (
-          <div>Hello Usernames</div>
-        )}
+        render={({ match }) => {
+          if (match.params.username !== userData.username) {
+            return (
+              <PublicTvShows
+                userSession={userSession}
+                username={match.params.username}
+              />
+            )
+          }
+
+          return <div>Yellow</div>
+        }}
       />
     </Switch>
   )
