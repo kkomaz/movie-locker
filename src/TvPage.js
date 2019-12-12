@@ -3,6 +3,7 @@ import { Button, Card, Form, Row, Col } from 'react-bootstrap'
 import { TV_PATH } from 'utils/constants'
 import axios from 'axios'
 import _ from 'lodash'
+import UserTvSearch from './UserTvSearch'
 
 function TvPage(props) {
   const { userSession, userTvList, setUserTvList } = props
@@ -57,6 +58,8 @@ function TvPage(props) {
 
   return (
     <>
+      <UserTvSearch />
+
       <Card>
         <Card.Header>TV Show Search</Card.Header>
         <Card.Text style={{ padding: '20px' }}>

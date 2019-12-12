@@ -8,9 +8,13 @@ function PublicUserTvShows(props) {
 
   useEffect(() => {
     const fetchTvShows = async () => {
-      const options = { decrypt: false, username }
-      const result = await userSession.getFile(TV_PATH, options)
-      setTvList(JSON.parse(result))
+      try {
+        const options = { decrypt: false, username }
+        const result = await userSession.getFile(TV_PATH, options)
+        setTvList(JSON.parse(result))
+      } catch (e) {
+        alert(`${username} does not have any movies saved!`)
+      }
     }
 
     fetchTvShows()
