@@ -57,6 +57,8 @@ function TvPage(props) {
     }
   }
 
+  console.log(tvList);
+
   return (
     <>
       <UserTvSearch />
@@ -86,7 +88,7 @@ function TvPage(props) {
           tvList.map((tv) => (
             <Col xs={4} style={{ marginBottom: '1em' }}>
               <Card>
-                <Card.Img variant="top" src={tv.image.medium} />
+                <Card.Img variant="top" src={tv?.image?.medium} />
                 <Card.Body>
                   <Card.Title style={{ textAlign: 'center' }}>
                     {tv.name}

@@ -42,7 +42,7 @@ function App(props) {
 
   const goToMyMovies = () => {
     const { username } = userSession.loadUserData()
-    history.push(`${username}/movies`)
+    history.push(`/${username}/movies`)
   }
 
   return (
